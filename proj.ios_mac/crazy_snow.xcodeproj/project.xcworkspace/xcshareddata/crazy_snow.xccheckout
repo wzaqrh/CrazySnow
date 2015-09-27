@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>50B77DBB-A79D-45D3-8137-E4D9AA88B42F</string>
+	<key>IDESourceControlProjectName</key>
+	<string>crazy_snow</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>E755A89E-3A9A-42F8-B0FF-FB15F4C59166</key>
+		<string>querhgit:popstar</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>crazy_snow/proj.ios_mac/crazy_snow.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>E755A89E-3A9A-42F8-B0FF-FB15F4C59166</key>
+		<string>../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>querhgit:popstar</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>E755A89E-3A9A-42F8-B0FF-FB15F4C59166</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E755A89E-3A9A-42F8-B0FF-FB15F4C59166</string>
+			<key>IDESourceControlWCCName</key>
+			<string>popstar</string>
+		</dict>
+	</array>
+</dict>
+</plist>
