@@ -28,5 +28,32 @@ package org.cocos2dx.cpp;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.view.KeyEvent;
+
 public class AppActivity extends Cocos2dxActivity {
+	@Override  
+    public boolean onKeyDown(int keyCode, KeyEvent event)  
+    {  
+        if (keyCode == KeyEvent.KEYCODE_BACK )  
+        {  
+			new AlertDialog.Builder(this).setTitle("确认退出吗？")  
+		    .setIcon(android.R.drawable.ic_dialog_info)  
+		    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+		        @Override  
+		        public void onClick(DialogInterface dialog, int which) { 
+		        	android.os.Process.killProcess(android.os.Process.myPid());
+		        	System.exit(0);
+		        }  
+		    })  
+		    .setNegativeButton("取消", new DialogInterface.OnClickListener() {  
+		        @Override  
+		        public void onClick(DialogInterface dialog, int which) {  
+		        	 
+		        }  
+		    }).show();
+        }  
+        return super.onKeyDown(keyCode, event);
+    }
 }

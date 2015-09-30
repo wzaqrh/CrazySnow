@@ -7,7 +7,7 @@
 //
 #pragma once
 #include "common/CommonDef.h"
-#include "WindowStageEntityType.h"
+#include "entity/WindowStageEntityType.h"
 
 
 class ShopEntity

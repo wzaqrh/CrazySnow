@@ -21,15 +21,25 @@ public:
 	}
     
     int  getHistMaxScore() const { return m_histMaxScore; }
-    void setHistMaxScore(int score);
+    int  getCurScore() const { return m_curScore; }
+    int  getTotalNeedScore() const { return m_totalNeedScore; }
+    int  getStageId() const { return m_stageId; }
     
-    int getDiamonds() const { return m_diamonds; }
+    int  getDiamonds() const { return m_diamonds; }
     void addDiamonds(int num);
     
-    int getStageId() const { return m_stageId; }
+    bool isSoundEnable() const { return m_isSoundEnable; }
+    void setSoundEnbale(bool enable);
+private:
+    void setHistMaxScore(int score);
+    void setCurScore(int score);
+    void setTotalNeedScore(int score);
     void setStageId(int stageId);
 private:
-    int m_stageId;
-    int m_histMaxScore;
-    int m_diamonds;
+    bool m_isSoundEnable;
+    int  m_stageId;
+    int  m_histMaxScore,m_curScore,m_totalNeedScore;
+    int  m_diamonds;
+    friend class StageEntity;
+    friend class DataStorage;
 };

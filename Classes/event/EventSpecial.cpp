@@ -2,6 +2,7 @@
 #include "graph/Graph.h"
 #include "scene/board/PlygonDrawer.h"
 #include "TilemapEvtHandler.h"
+#include "common/SoundPool.h"
 using namespace cocos2d;
 
 //TilEvtHandler_spec
@@ -41,7 +42,9 @@ bool TilEvtHandler_spec::onTouchBegin(Point2i tilepos, bool& swallow) {
 			if (m_pLockChecker->check_lock(m_pDrawer->m_graph)) {
 				m_pDelegate->onTilmapLocked();
 			}
-		})) 
+            
+            SoundPool::Inst()->playEffect(SOUND_EFFECT_BONUS);
+		}))
 		{
 			processed = true;
 			m_ptSec = tilepos;

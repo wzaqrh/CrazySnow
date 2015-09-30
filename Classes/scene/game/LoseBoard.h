@@ -13,6 +13,7 @@ class LoseBoard : public cocos2d::Layer
 public:
 	CREATE_FUNC(LoseBoard);
 	LoseBoard();
+    ~LoseBoard();
 	virtual bool init();
 public:
 	void setBoardEventCallback(std::function<void(int)> delegate);

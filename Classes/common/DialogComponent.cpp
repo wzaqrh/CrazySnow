@@ -7,8 +7,9 @@
 //
 
 #include "DialogComponent.h"
-#include "common/CommonDef.h"
-#include "common/TouchSwallowLayer.h"
+#include "CommonDef.h"
+#include "TouchSwallowLayer.h"
+#include "ResourceUtility.h"
 
 using namespace cocos2d;
 
@@ -40,13 +41,12 @@ DialogTitle* DialogTitle::create(DialogTitleType titleType, const char* message)
 
 cocos2d::Node*  DialogTitle::makeBackGround(DialogTitleType type)
 {
-	const char* backGoundName[CS_DIALOG_TITLE_MAX] = {
-		DIR_SHOP"shop_headbg.png",
-		DIR_DIALOG"win_bg.png",
-		DIR_DIALOG"lostbg.png",
+    PtrCharPair backGoundName[CS_DIALOG_TITLE_MAX] = {
+		{DIR_SHOP, "shop_headbg.png"},
+		{DIR_DIALOG, "win_bg.png"},
+		{DIR_DIALOG, "lostbg.png"}
 	};
-	const char* filename = backGoundName[type];
-    return Sprite::create(filename);
+    return ResourceUtility::createSprite(backGoundName[type].first, backGoundName[type].second);
 }
 
 cocos2d::Label* DialogTitle::makeLabel(DialogTitleType type, const char* message)
@@ -204,32 +204,32 @@ DialogTitle*   PopupDialog::makeTitle(DialogTitleType titleType)
 
 cocos2d::Node* PopupDialog::makeBackGround(int bkgType)
 {
-	const char* filenames[CS_POPUP_DIALOG_MAX] = {
-		DIR_DIALOG"win_bg.png",
-		DIR_DIALOG"lostbg.png"
+	PtrCharPair filenames[CS_POPUP_DIALOG_MAX] = {
+		MAKE_PCHAR_PAIR(DIR_DIALOG, "win_bg.png"),
+		MAKE_PCHAR_PAIR(DIR_DIALOG, "lostbg.png")
 	};
-	return Sprite::create(filenames[bkgType]);
+	return ResourceUtility::createSprite(filenames[bkgType].first, filenames[bkgType].second);
 }
 
 cocos2d::MenuItem* PopupDialog::makeButton(DialogButtonType buttonType, const cocos2d::ccMenuCallback& callback)
 {
-	const char* filenames[CS_DIALOG_BTN_MAX] = {
-		DIR_DIALOG"close_btn.png",
-		DIR_DIALOG"back_btn.png",
-		DIR_DIALOG"jxtg.png",
-		DIR_DIALOG"next_b.png"
+	PtrCharPair filenames[CS_DIALOG_BTN_MAX] = {
+		MAKE_PCHAR_PAIR(DIR_DIALOG, "close_btn.png"),
+		MAKE_PCHAR_PAIR(DIR_DIALOG, "back_btn.png"),
+		MAKE_PCHAR_PAIR(DIR_DIALOG, "jxtg.png"),
+		MAKE_PCHAR_PAIR(DIR_DIALOG, "next_b.png"),
 	};
-	auto menuItem = ResourceUtility::createMenuItem(filenames[buttonType], filenames[buttonType], callback);
+	auto menuItem = ResourceUtility::createMenuItem(filenames[buttonType].second, filenames[buttonType].second, filenames[buttonType].first, callback);
 	menuItem->setTag(buttonType - CS_DIALOG_BTN_CLOSE + TAG_BTN_CLOSE);
 	return menuItem;
 }
 
 cocos2d::Node* PopupDialog::makeLabel(DialogLabelType labelType)
 {
-	const char* filenames[CS_DIALOG_BTN_MAX] = {
-		DIR_DIALOG"jxx.png",
+	PtrCharPair filenames[CS_DIALOG_BTN_MAX] = {
+		MAKE_PCHAR_PAIR(DIR_DIALOG, "jxx.png"),
 	};
-	return Sprite::create(filenames[labelType]);
+	return ResourceUtility::createSprite(filenames[labelType].first, filenames[labelType].second);
 }
 
 

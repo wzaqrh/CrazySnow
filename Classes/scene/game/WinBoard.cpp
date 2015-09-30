@@ -7,9 +7,9 @@
 //
 
 #include "WinBoard.h"
-#include "ResourceDef.h"
-#include "ResourceUtility.h"
-#include "DialogComponent.h"
+#include "common/ResourceDef.h"
+#include "common/ResourceUtility.h"
+#include "common/DialogComponent.h"
 
 using namespace cocos2d;
 
@@ -29,22 +29,26 @@ WinBoard::WinBoard()
 ,m_btnClose(nullptr)
 {
 }
-bool WinBoard::init()
-{
+bool WinBoard::init() {
 	Layer::init();
+    setContentSize(Size(640, 960));
     initUI();
     layout();
     return true;
+}
+WinBoard::~WinBoard() {
+    removeAllChildren();
+    SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 }
 void WinBoard::setBoardEventCallback(std::function<void(int)> delegate) {
 	m_callback = delegate;
 }
 void WinBoard::initUI()
 {
-    m_background = Sprite::create(DIR_DIALOG"win_bg.png");
+    m_background = ResourceUtility::createSprite(DIR_DIALOG, "win_bg.png");
     this->addChild(m_background);
     
-    m_title = Sprite::create(DIR_DIALOG"win.png");
+    m_title = ResourceUtility::createSprite(DIR_DIALOG, "win.png");
     this->addChild(m_title);
     
     m_pMenu = Menu::create();
@@ -52,15 +56,15 @@ void WinBoard::initUI()
 	m_pMenu->setPosition(Point::ZERO);
 	this->addChild(m_pMenu);
     
-    m_btnLeft = ResourceUtility::createMenuItem(DIR_DIALOG"back_btn.png", DIR_DIALOG"back_btn.png", CC_CALLBACK_1(WinBoard::onMenuCallback, this));
+    m_btnLeft = ResourceUtility::createMenuItem("back_btn.png", "back_btn.png", DIR_DIALOG, CC_CALLBACK_1(WinBoard::onMenuCallback, this));
     m_btnLeft->setTag(TAG_BTN_LEFT);
     m_pMenu->addChild(m_btnLeft);
     
-    m_btnRight = ResourceUtility::createMenuItem(DIR_DIALOG"next_b.png", DIR_DIALOG"next_b.png", CC_CALLBACK_1(WinBoard::onMenuCallback, this));
+    m_btnRight = ResourceUtility::createMenuItem("next_b.png", "next_b.png", DIR_DIALOG, CC_CALLBACK_1(WinBoard::onMenuCallback, this));
     m_btnRight->setTag(TAG_BTN_RIGHT);
     m_pMenu->addChild(m_btnRight);
     
-    m_btnClose = ResourceUtility::createMenuItem(DIR_DIALOG"close_btn.png", DIR_DIALOG"close_btn.png", CC_CALLBACK_1(WinBoard::onMenuCallback, this));
+    m_btnClose = ResourceUtility::createMenuItem("close_btn.png", "close_btn.png", DIR_DIALOG, CC_CALLBACK_1(WinBoard::onMenuCallback, this));
     m_btnClose->setTag(TAG_BTN_CLOSE);
     m_pMenu->addChild(m_btnClose);
 }

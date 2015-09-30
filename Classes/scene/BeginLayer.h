@@ -14,7 +14,10 @@ public:
 	virtual void onEnter();
     virtual void onExit();
 private:
+    void initGlobal();
 	void initUI();
+    void initSound();
+    void addParticleEffect();
 	void updateUI();
 	void onMenuCallback(cocos2d::Ref* ref1);
 private:

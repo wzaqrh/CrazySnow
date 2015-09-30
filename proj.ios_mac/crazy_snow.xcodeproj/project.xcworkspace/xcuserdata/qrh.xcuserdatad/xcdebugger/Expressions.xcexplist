@@ -10,5 +10,60 @@
             </PersistentString>
          </PersistentStrings>
       </ContextState>
+      <ContextState
+         contextName = "StageEntity::initRoundData(int, bool):StageEntity.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "WindowStageEntity::loadDialog(tagWindowStageID, std::__1::function&lt;void (tagWindowStageID, cocos2d::Node*)&gt; const&amp;):WindowStageEntity.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "BeginLayer::onMenuCallback(cocos2d::Ref*):BeginLayer.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "cocos2d::FileUtils::fullPathForFilename(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; const&amp;):CCFileUtils.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "_searchPathArray">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "SoundPool::playEffect(enSoundEffectType):SoundPool.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "effectName[effectType].name">
+            </PersistentString>
+            <PersistentString
+               value = "effectName[effectType].volume">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "cocos2d::UserDefault::initXMLFilePath():CCUserDefault-apple.mm">
+         <PersistentStrings>
+            <PersistentString
+               value = "_filePath">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "PlygonDrawer::do_moveCellAnim(GrapElemsFlyInProxy const&amp;, std::__1::function&lt;void ()&gt; const&amp;):PlygonDrawer.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "flyin_seq.cost_time[ptIter.y][ptIter.x]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "WindowAdaptUtility::addRootNodeToScene(cocos2d::Scene*, cocos2d::Node*, int):WindowAdaptUtility.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "GraphDataStorageXML::load(char const*, GraphData&amp;, StageBaseData*):GraphDataStorage.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "fullpath">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
    </ContextStates>
 </VariablesViewState>

@@ -11,7 +11,6 @@
 #include "graph/IElemPaddingStragy.h"
 #include "scene/board/TileMap.h"
 #include "scene/board/PlygonDrawer.h"
-#include "data/Factory.h"
 #include "event/TilemapEvtHandler.h"
 #include "event/TilmapEvtDispatcher.h"
 #include "entity/StageEntity.h"
@@ -19,7 +18,7 @@
 #include "scene/game/WinBoard.h"
 #include "scene/game/LoseBoard.h"
 #include "entity/WindowStageEntity.h"
-
+#include "common/SoundPool.h"
 
 using namespace cocos2d;
 using namespace std;
@@ -37,11 +36,13 @@ GameMainNode::~GameMainNode() {
     CC_SAFE_DELETE(m_pTileEvtDispatcher);
     CC_SAFE_DELETE(m_pTileEvtHandlerManager);
     CC_SAFE_DELETE(m_pGraph);
+    
+    StageEntity::getGameUser()->removeObserver(this);
 }
 
 bool GameMainNode::init(){
 	Layer::init();
-	this->setContentSize(Size(640,960));
+    setContentSize(Size(640, 960));
 	return true;
 };
 bool GameMainNode::enter() {
@@ -56,7 +57,8 @@ bool GameMainNode::enter() {
 		this->addChild(m_pTileMap);
 
 		Size szMap = m_pTileMap->getContentSize();
-		m_pTileMap->setPosition(Vec2((DESIGN_RESOLUTION_WIDTH - szMap.width) / 2, 0));
+		m_pTileMap->setPosition(Vec2((getContentSize().width - szMap.width) / 2, 0));
+        //cocos2d::log("(%f,%f)", m_pTileMap->getPosition().x, m_pTileMap->getPosition().y);
 	}
 
 	{
@@ -91,12 +93,51 @@ bool GameMainNode::enter() {
 	}
 
     {
-        auto gameBg = Sprite::create(DIR_MAIN"gamebg.png");
-        gameBg->setPosition(Vec2(DESIGN_RESOLUTION_WIDTH_HALF, DESIGN_RESOLUTION_HEIGHT_HALF));
-        this->addChild(gameBg, ZORDER_BG);
+        auto background = ResourceUtility::createSprite(DIR_MAIN, "gamebg.png");
+        background->setScaleY(CC_CONTENT_SCALE_FACTOR());
+        background->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+        background->setPosition(Vec2(getContentSize().width / 2, 0));
+        this->addChild(background, ZORDER_BG);
     }
     
+    StageEntity::getGameUser()->addObserver(this, CC_CALLBACK_1(GameMainNode::onStageDataChanged, this));
+    
+    //preloadParticle();
+    
 	return true;
+}
+
+
+static enComboType get_combo_typ(int nStars) {
+	if (nStars >= 11) {
+		return COMBO_FANTASTIC;
+	}
+	else if(nStars >= 9) {
+		return COMBO_AWESOME;
+	}
+	else if(nStars >= 7) {
+		return COMBO_COOL;
+	}
+	return COMBO_NULL;
+}
+void GameMainNode::onStageDataChanged(StageUserData* data) {
+    unsigned int dirtyMask = data->getDirtyMask();
+#ifdef USE_COMBO
+    if (dirtyMask & DIRTY_BIT_BONUS_STAR) {
+        auto combo_typ = get_combo_typ(data->getLastBonusStar());
+        if (combo_typ != COMBO_NULL ) {
+            m_pPlyDrawer->do_comboAnim(combo_typ, nullptr);
+        }
+    }
+#endif
+#ifdef USE_STAGE_CLEAR
+    if (dirtyMask & DIRTY_BIT_STAGE_CLEAR_FLAG) {
+        m_pPlyDrawer->do_stateClrAnim(nullptr);
+    }
+#endif
+    if (dirtyMask & DIRTY_BIT_BONUS_TYPE) {
+        SoundPool::Inst()->playEffect(SOUND_EFFECT_BONUS);
+    }
 }
 void GameMainNode::onTitleEvent(int event, void* pdata) {
     if (event == GAME_TITLE_EVT_REFRESH_MAP) {
@@ -104,9 +145,6 @@ void GameMainNode::onTitleEvent(int event, void* pdata) {
     }
     else if (event == GAME_TITLE_EVT_RESET_BONUS) {
         StageEntity::Inst()->resetBonus();
-    }
-    else if (event == GAME_TITLE_EVT_STAGE_CLEAR) {
-        m_pPlyDrawer->do_stateClrAnim(nullptr);
     }
 }
 
@@ -141,17 +179,12 @@ void GameMainNode::onTouchCancelled(cocos2d::Touch* touch,cocos2d::Event* event)
 }
 
 void GameMainNode::onEnter() {
-	scheduleUpdate();
     CCLayer::onEnter();
 }
 void GameMainNode::onExit() {
-	_eventDispatcher->removeEventListenersForTarget(this);
-    
-    UserInfo::Inst()->setHistMaxScore(StageEntity::getGameUser()->getCurScore());
     m_pGraph->serilize(*StageEntity::graphData());
     StageEntity::Inst()->saveRecord();
     
-	unscheduleUpdate();
     CCLayer::onExit();
 }
 void GameMainNode::update(float) {
@@ -168,7 +201,8 @@ void GameMainNode::onTilmapLocked() {
     
 	DialogType dialogType = StageEntity::Inst()->checkStateSuccess() ? CS_POPUP_DIALOG_WIN : CS_POPUP_DIALOG_LOSE;
     if (dialogType == CS_POPUP_DIALOG_WIN) {
-        showResult(true);
+        m_pPlyDrawer->do_stateOverAnim(std::vector<Point2i>(), CC_CALLBACK_0(GameMainNode::showResult, this, true));
+        preloadWinBoard();
     }
     else {
         showResult(false);
@@ -212,6 +246,19 @@ void GameMainNode::onDialogEvent(int event) {
 	
 }
 
+void GameMainNode::onLoadTextureOk(cocos2d::Texture2D* tex) {
+    m_textures.pushBack(tex);
+}
+void GameMainNode::preloadWinBoard() {
+    TextureCache::getInstance()->addImageAsync(DIR_ZZIMAGE"dialog.png", CC_CALLBACK_1(GameMainNode::onLoadTextureOk, this));
+}
+void GameMainNode::preloadParticle() {
+    for (size_t i = 0; i < 4; ++i) {
+        char buf[200]; sprintf(buf, DIR_PARTICLE"blast%ld.png", i + 1);
+        TextureCache::getInstance()->addImageAsync(buf, CC_CALLBACK_1(GameMainNode::onLoadTextureOk, this));
+    }
+}
+
 std::pair<int, int> GameMainNode::nextBonus() {
 	return StageEntity::Inst()->nextBonus();
 }
@@ -232,61 +279,3 @@ void GameMainNode::popsNewStars(const std::vector<NodeCategory>& starCategSeq, b
 	}
     if (! preview) StageEntity::Inst()->addStarForScore(starNum, count);
 }
-
-#if 0
-//GameController
-GameController::GameController() {
-	m_pScoreBdLayer = nullptr;
-	m_pDrawLayer   = nullptr;
-}
-GameController::~GameController() {
-	CC_SAFE_RELEASE(m_pDrawLayer);
-	CC_SAFE_RELEASE(m_pScoreBdLayer);
-}
-void GameController::attach(GameTitleNode* pScoreBdLayer, PlygonDrawer* pDrawLayer)
-{
-	m_pScoreBdLayer = pScoreBdLayer; m_pScoreBdLayer->retain();
-	m_pDrawLayer = pDrawLayer; m_pDrawLayer->retain();
-}
-inline PlygonDrawer::en_combo_typ get_combo_typ(int nStars) {
-	if (nStars>=11) {
-		return PlygonDrawer::e_combo_fantastic;
-	}
-	else if(nStars>=9) {
-		return PlygonDrawer::e_combo_awesome;
-	}
-	else if(nStars>=7) {
-		return PlygonDrawer::e_combo_cool;
-	}
-	return PlygonDrawer::e_combo_null;
-}
-void GameController::GameMarkWillChange(GameData* pGameDat, int starNum, int addMark) {
-	m_pScoreBdLayer->updateTips(starNum, addMark);
-}
-void GameController::GameMarkChanged(GameData* pGameDat, const StageBaseData& gameCfg, 
-								   const UserInfo& gameUsrDat, GameTmpValue& tmpVal, int starNum) 
-{
-	m_pScoreBdLayer->updateCurScore(gameUsrDat.m_lbCurScore);
-	
-	m_pScoreBdLayer->updateBonusLabel(gameCfg.m_bonusNeedStar - gameUsrDat.m_bonusCurStar);
-	
-	if (tmpVal.isNewRussiaBox) {
-		tmpVal.isNewRussiaBox = false;
-		m_pScoreBdLayer->updateBonusImg(gameUsrDat.m_nxtBonusType);
-	}
-	
-	if (tmpVal.m_stageClearFlag == 1) {
-		tmpVal.m_stageClearFlag++;
-		m_pDrawLayer->do_stateClrAnim(nullptr);
-	}
-
-	PlygonDrawer::en_combo_typ combo_typ = get_combo_typ(starNum);
-	if( combo_typ != PlygonDrawer::e_combo_null ) {
-		m_pDrawLayer->do_comboAnim(combo_typ, nullptr);
-	}
-}
-void GameController::GameCfgChanged(GameData* pGameDat, const StageBaseData& gameCfg) {
-	m_pScoreBdLayer->updateNeedScoreLabel(gameCfg.m_lbNeedScore);
-	m_pScoreBdLayer->updateStageIdxLabel(gameCfg.m_roundIndex);
-
-#endif

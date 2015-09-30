@@ -57,7 +57,7 @@ public:
 		   m_callback();
 	}
 	virtual void update(float ft) {
-		cocos2d::FiniteTimeAction::update(ft);
+		//cocos2d::FiniteTimeAction::update(ft);
 		if( m_cnt >= m_needCnt ) _duration = 0.0f;
 	}
 private:
@@ -84,15 +84,15 @@ private:
 	cocos2d::Vector<cocos2d::Sprite*> m_rects;
 };
 
+enum enComboType {
+    COMBO_NULL,
+    //e_combo_good,
+    COMBO_COOL,
+    COMBO_AWESOME,
+    COMBO_FANTASTIC
+};
 class PlygonDrawer :public cocos2d::Node {
 public:
-	enum en_combo_typ {
-		e_combo_null,
-		//e_combo_good,
-		e_combo_cool,
-		e_combo_awesome,
-		e_combo_fantastic
-	};
 	void onCmdBegin();
 	void do_pushCell(Point2i newPt, Point2i oldPt = makeP2(-1,-1) );
 	void do_popCell(Point2i oldPt);
@@ -100,10 +100,10 @@ public:
 	void draw_with_Graph_proxy(const Graph_proxy& graph_proxy, const std::function<void()>& moveok);
 	void do_moveCellAnim(const GrapElemsFlyInProxy& flyin_seq, const std::function<void()>& moveok);
 	
-	void do_comboAnim(en_combo_typ combo_typ, const std::function<void()>& moveok);
+	void do_comboAnim(enComboType combo_typ, const std::function<void()>& moveok);
 	void do_stateClrAnim(const std::function<void()>& moveok);
 	void do_stateOverAnim(const std::vector<Point2i>& ptLeftSeq, const std::function<void()>& animok);
-	void do_flySpriteAnim(cocos2d::Sprite* sp, cocos2d::Point pos_begin, cocos2d::Point pos_end, float duration, float fscale, const std::function<void()>& moveok);
+	void do_flySpriteAnim(cocos2d::Sprite* sp, cocos2d::Point pos_begin, cocos2d::Point pos_end, float duration, float fscale, bool removeSelfOnFinish, const std::function<void()>& moveok);
 
 	void do_addHighLight(const std::vector<Point2i>& pt_seq);
 	void do_clrHighLight();
@@ -125,6 +125,7 @@ protected:
 	int  get_paddNewCellAnim(const GraphPaddElemsProxy& padd_proxy, ActionWaiter* pWaiter);
 private:
 	void playBlastAnim(Point2i pos, enNodeColor color);
+    void addBlastParticle(const Point2i& pos);
 public:
 	PlygonDrawer();
 	void attach(GraphMat* graph, TileMapLayer* tilemap);

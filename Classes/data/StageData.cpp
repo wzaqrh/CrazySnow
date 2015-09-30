@@ -7,19 +7,26 @@
 //
 
 #include "StageData.h"
+#include "UserInfo.h"
 #include "graph/GraphCommDef.h"
 StageUserData::StageUserData()
 :m_dirtyMask(0)
 ,m_notifyLock(0)
+,m_curScore(0)
+,m_totalNeedScore(0)
 {}
-void StageUserData::init(const StageBaseData& baseData) {
+void StageUserData::init(const StageBaseData& baseData, const UserInfo& userInfo) {
+    m_curScore = userInfo.getCurScore();
+    m_totalNeedScore = userInfo.getTotalNeedScore();
+    next(baseData);
+}
+void StageUserData::next(const StageBaseData& baseData) {
     m_bonusNeedStar = baseData.m_bonusNeedStar;
-    m_lbCurScore = 0;
-    m_lbNeedScore = baseData.m_lbNeedScore;
+    m_needScore = baseData.m_lbNeedScore;
     clear();
 }
 void StageUserData::clear() {
-    m_bonusCurStar = 0;
+    m_lastBonusStar = m_bonusCurStar = 0;
     m_curBonusType = 0; m_nxtBonusType = randNodeSpec();
     
     m_stageClearFlag = false;
@@ -47,6 +54,7 @@ void StageUserData::notifyObservers() {
 }
 
 void StageUserData::addBonusStar(int num) {
+    m_lastBonusStar = num;
     m_bonusCurStar += num;
     if (m_bonusCurStar >= m_bonusNeedStar) {
         m_bonusCurStar -= m_bonusNeedStar;
@@ -60,13 +68,20 @@ void StageUserData::setCurBonusType(int newBonusType) {
     m_dirtyMask |= DIRTY_BIT_BONUS_TYPE;
 }
 void StageUserData::addCurScore(int score) {
-    m_lbCurScore += score;
-    if (m_lbCurScore >= m_lbNeedScore && ! m_stageClearFlag) {
+    m_curScore += score;
+    if (m_curScore >= m_totalNeedScore + m_needScore && ! m_stageClearFlag) {
         setStageClearFlag(true);
     }
     m_dirtyMask |= DIRTY_BIT_CURSCORE;
 }
+void StageUserData::setTotalNeedScore(int score) {
+    m_totalNeedScore = score;
+}
 void StageUserData::setStageClearFlag(bool cleared) {
+    if (! m_stageClearFlag && cleared) {
+        m_totalNeedScore += m_needScore;
+        m_needScore = 0;
+    }
     m_stageClearFlag = cleared;
     m_dirtyMask |= DIRTY_BIT_STAGE_CLEAR_FLAG;
 }
@@ -91,7 +106,7 @@ int randNodeSpec() {
 	}
     
 	if (rand()%6 >= 4) {
-		static enBeadCategory seeds_spec[4] = {CHESS_CATEGORY_QUEEN, CHESS_CATEGORY_ARMOR, CHESS_CATEGORY_DOUBLE, CHESS_CATEGORY_SDOLIER};
+		static enBeadCategory seeds_spec[4] = {CHESS_CATEGORY_QUEEN, CHESS_CATEGORY_ARMOR, CHESS_CATEGORY_HORSE, CHESS_CATEGORY_SDOLIER};
 		return seeds_spec[rand()%4];
 	}
 	else {

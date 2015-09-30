@@ -10,7 +10,7 @@
 #include "graph/GraphCommDef.h"
 #include "data/GameEntity.h"
 #include "event/EventPopstar.h"
-#include "WindowStageEntityType.h"
+#include "entity/WindowStageEntityType.h"
 
 class TileMapLayer;
 class GraphMat;
@@ -20,6 +20,7 @@ class GameController;
 class GameData;
 class TilmapEvtDispatcher;
 class TilmapEvtHandlerManager;
+class StageUserData;
 
 class GameMainNode
 : public cocos2d::Layer
@@ -51,6 +52,11 @@ private:
     void showResult(bool win);
     void onDialogCreateCallback(WindowStageID windowId, cocos2d::Node* node);
     void onDialogEvent(int event);
+    void onStageDataChanged(StageUserData* stageUserData);
+private:
+    void preloadWinBoard();
+    void preloadParticle();
+    void onLoadTextureOk(cocos2d::Texture2D* tex);
 private:
 	Point2i              m_ptCur;
     TileMapLayer*        m_pTileMap;
@@ -62,6 +68,7 @@ private:
 
 	GameTitleNode*       m_gameTitle;
 	GameController*		 m_pGlbEvtProc;
+    cocos2d::Vector<cocos2d::Texture2D*> m_textures;
 };
 
 #if 0

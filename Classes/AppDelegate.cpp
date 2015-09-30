@@ -2,6 +2,7 @@
 #include "AppMacros.h"
 #include "common/CommonDef.h"
 #include "entity/WindowStageEntity.h"
+#include "common/SoundPool.h"
 
 USING_NS_CC;
 using namespace std;
@@ -24,15 +25,21 @@ bool AppDelegate::applicationDidFinishLaunching() {
         director->setOpenGLView(glview);
     }
 
-    director->setOpenGLView(glview);
-
-
 	Size frameSize = glview->getFrameSize();
-
-
-	glview->setDesignResolutionSize(DESIGN_RESOLUTION_WIDTH, DESIGN_RESOLUTION_HEIGHT, ResolutionPolicy::SHOW_ALL);
-	
     
+#if 0
+    if (DESIGN_RESOLUTION_WIDTH > frameSize.width / frameSize.height * DESIGN_RESOLUTION_HEIGHT) {
+        glview->setDesignResolutionSize(DESIGN_RESOLUTION_WIDTH, DESIGN_RESOLUTION_HEIGHT, ResolutionPolicy::EXACT_FIT);
+    }
+    else
+        glview->setDesignResolutionSize(DESIGN_RESOLUTION_WIDTH, DESIGN_RESOLUTION_HEIGHT, ResolutionPolicy::FIXED_HEIGHT);
+#else
+    if (DESIGN_RESOLUTION_HEIGHT > frameSize.height / frameSize.width * DESIGN_RESOLUTION_WIDTH) {
+        glview->setDesignResolutionSize(DESIGN_RESOLUTION_WIDTH, DESIGN_RESOLUTION_HEIGHT, ResolutionPolicy::EXACT_FIT);
+    }
+    else
+        glview->setDesignResolutionSize(DESIGN_RESOLUTION_WIDTH, DESIGN_RESOLUTION_HEIGHT, ResolutionPolicy::FIXED_WIDTH);
+#endif
     vector<string> searchPath;
 
     // In this demo, we select resource according to the frame's height.
@@ -47,9 +54,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // set searching path
     FileUtils::getInstance()->setSearchPaths(searchPath);
 	
-    // turn on display FPS
+#if defined(COCOS2D_DEBUG) && (COCOS2D_DEBUG > 0)
     director->setDisplayStats(true);
-
+#else
+    director->setDisplayStats(false);
+#endif
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
 
@@ -66,6 +75,7 @@ void AppDelegate::applicationDidEnterBackground() {
 
     // if you use SimpleAudioEngine, it must be pause
     // SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
+    SoundPool::Inst()->pauseAll();
 }
 
 // this function will be called when the app is active again
@@ -74,4 +84,5 @@ void AppDelegate::applicationWillEnterForeground() {
 
     // if you use SimpleAudioEngine, it must resume here
     // SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+    SoundPool::Inst()->resumeAll();
 }

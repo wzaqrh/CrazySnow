@@ -41,6 +41,7 @@ void GameTitleNode::setEventHandler(const GameTitleEventCallback& callback) {
 
 void GameTitleNode::enter(const GameTitleInitCallback& onInitOk)
 {
+    setContentSize(Size(640, 960));
     StageEntity::getGameUser()->addObserver(this, CC_CALLBACK_1(GameTitleNode::onStageDataChanged, this));
     
     auto gameStatus = StageEntity::getGameUser();
@@ -49,14 +50,14 @@ void GameTitleNode::enter(const GameTitleInitCallback& onInitOk)
 	m_nNextBonusNeedStar = gameStatus->getBonusNeedStar() - gameStatus->getBonusStar();
     
     auto gameBase = StageEntity::getGameBase();
-    m_nNeedScore  = gameBase->m_lbNeedScore;
+    m_nNeedScore = gameBase->m_lbNeedScore + gameStatus->getTotalNeedScore();
     //关卡
 	{
-        auto pCoumBg = Sprite::create(DIR_MAIN"coum_bg.png");
+        auto pCoumBg = ResourceUtility::createSprite(DIR_MAIN, "coum_bg.png");
         pCoumBg->setPosition(Vec2(143, 834));
         this->addChild(pCoumBg);
         
-		auto pGuanka = Sprite::create(DIR_MAIN"guanka.png");
+		auto pGuanka = ResourceUtility::createSprite(DIR_MAIN, "guanka.png");
 		pGuanka->setPosition(Vec2(70, 834));
         this->addChild(pGuanka);
 
@@ -69,11 +70,11 @@ void GameTitleNode::enter(const GameTitleInitCallback& onInitOk)
 	
     //目标分
 	{
-        auto pCoumBg = Sprite::create(DIR_MAIN"coum_bg.png");
+        auto pCoumBg = ResourceUtility::createSprite(DIR_MAIN, "coum_bg.png");
         pCoumBg->setPosition(Vec2(484, 834));
         this->addChild(pCoumBg);
         
-		auto pMubiao = Sprite::create(DIR_MAIN"traget.png");//mu biao fen
+		auto pMubiao = ResourceUtility::createSprite(DIR_MAIN, "traget.png");//mu biao fen
 		pMubiao->setPosition(Vec2(420, 834));
 		this->addChild(pMubiao);
 
@@ -86,12 +87,12 @@ void GameTitleNode::enter(const GameTitleInitCallback& onInitOk)
 	
     //历史最高分
 	{
-        auto game_head = Sprite::create(DIR_MAIN"game_head.png");
-        game_head->setPosition(Vec2(DESIGN_RESOLUTION_WIDTH_HALF, 960 + 59));
+        auto game_head = ResourceUtility::createSprite(DIR_MAIN, "game_head.png");
+        game_head->setPosition(Vec2(getContentSize().width / 2, 960 + 59));
         game_head->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
         this->addChild(game_head, -1);
         
-        auto history_mark = Sprite::create(DIR_MAIN"lszgf.png");//history max mark
+        auto history_mark = ResourceUtility::createSprite(DIR_MAIN, "lszgf.png");//history max mark
         history_mark->setPosition(Vec2(116, 923));
         this->addChild(history_mark);
         
@@ -110,7 +111,7 @@ void GameTitleNode::enter(const GameTitleInitCallback& onInitOk)
 
     //下一个道具
 	{
-        auto nextProp = Sprite::create(DIR_MAIN"cx.png");
+        auto nextProp = ResourceUtility::createSprite(DIR_MAIN, "cx.png");
         nextProp->setPosition(Vec2(437, 777));
         this->addChild(nextProp);
         
@@ -127,28 +128,28 @@ void GameTitleNode::enter(const GameTitleInitCallback& onInitOk)
 	this->addChild(m_pMenu, ZORDER_MENU);
 
 	{
-        auto _menuItem = ResourceUtility::createMenuItem(DIR_MAIN"stop.png", DIR_MAIN"stop.png", CC_CALLBACK_1(GameTitleNode::onMenuCallback, this));
+        auto _menuItem = ResourceUtility::createMenuItem("stop.png", "stop.png", DIR_MAIN, CC_CALLBACK_1(GameTitleNode::onMenuCallback, this));
 		_menuItem->setPosition(Vec2(580, 919));
 		_menuItem->setTag(TAG_BTN_PAUSE);
 		m_pMenu->addChild(_menuItem);
 	}
-
+#ifdef CS_ENBALE_SHOP
 	{
-        auto _menuItem = ResourceUtility::createMenuItem(DIR_MAIN"cw.png", DIR_MAIN"cw.png", CC_CALLBACK_1(GameTitleNode::onMenuCallback, this));
+        auto _menuItem = ResourceUtility::createMenuItem("cw.png", "cw.png", DIR_MAIN, CC_CALLBACK_1(GameTitleNode::onMenuCallback, this));
 		_menuItem->setPosition(Vec2(101, 762));
 		_menuItem->setTag(TAG_BTN_RESET);
 		m_pMenu->addChild(_menuItem);
 	}
 
 	{
-        auto _menuItem = ResourceUtility::createMenuItem(DIR_MAIN"next.png", DIR_MAIN"next.png", CC_CALLBACK_1(GameTitleNode::onMenuCallback, this));
+        auto _menuItem = ResourceUtility::createMenuItem("next.png", "next.png", DIR_MAIN, CC_CALLBACK_1(GameTitleNode::onMenuCallback, this));
 		_menuItem->setPosition(Vec2(181, 762));
 		_menuItem->setTag(TAG_BTN_REFRESH);
 		m_pMenu->addChild(_menuItem);
 	}
     
     {
-        auto addMo = Sprite::create(DIR_MAIN"mon_bg.png");
+        auto addMo = ResourceUtility::createSprite(DIR_MAIN, "mon_bg.png");
         addMo->setPosition(Vec2(131, 688));
         this->addChild(addMo);
         
@@ -157,14 +158,25 @@ void GameTitleNode::enter(const GameTitleInitCallback& onInitOk)
 		m_curDiamond->setPosition(Vec2(62, 671));
 		this->addChild(m_curDiamond);
         
-        auto _menuItem = ResourceUtility::createMenuItem(DIR_MAIN"add_mo.png", DIR_MAIN"add_mo.png", CC_CALLBACK_1(GameTitleNode::onMenuCallback, this));
+        auto _menuItem = ResourceUtility::createMenuItem("add_mo.png", "add_mo.png", DIR_MAIN, CC_CALLBACK_1(GameTitleNode::onMenuCallback, this));
 		_menuItem->setPosition(Vec2(220, 688));
 		_menuItem->setTag(TAG_BTN_ADD_DIMOND);
 		m_pMenu->addChild(_menuItem);
     }
-
+#endif
 	updateBonusImg(gameStatus->getNxtBonusType());
+    
+#ifdef CS_ENBALE_PARTICLE
+    {
+        auto particle = ParticleSystemQuad::create(DIR_PARTICLE"snow.plist");
+        particle->setAutoRemoveOnFinish(false);
+        particle->setPosition(Vec2(getContentSize().width / 2, getContentSize().height));
+        this->addChild(particle, 1000);
+    }
+#endif
 }
+
+
 
 void GameTitleNode::onStageDataChanged(StageUserData* data) {
     unsigned int dirtyMask = data->getDirtyMask();
@@ -177,18 +189,14 @@ void GameTitleNode::onStageDataChanged(StageUserData* data) {
     if (dirtyMask & DIRTY_BIT_CURSCORE) {
         updateCurScore(data->getCurScore());
     }
-    if (dirtyMask & DIRTY_BIT_STAGE_CLEAR_FLAG) {
-        if (m_callback) {
-            m_callback(GAME_TITLE_EVT_STAGE_CLEAR, nullptr);
-        }
-    }
 }
-
+static long last_clock;
 void GameTitleNode::onMenuCallback(cocos2d::Ref* sender) {
     MenuItem* _menuItem = static_cast<MenuItem*>(sender);
     UserInfo* userInfo = UserInfo::Inst();
     switch (_menuItem->getTag()) {
         case TAG_BTN_PAUSE:
+            cocos2d::log("popup dialog %ld", last_clock = clock());
             this->pauseGame();
             break;
         case TAG_BTN_RESET:
@@ -235,6 +243,7 @@ void GameTitleNode::pauseGame() {
     });
     
 	Director::getInstance()->pause();
+    cocos2d::log("popup ok %ld", clock() - last_clock);
 }
 void GameTitleNode::resumeGame() {
 	Director::getInstance()->resume();
@@ -243,7 +252,6 @@ void GameTitleNode::resumeGame() {
 		m_pPauseBoard = NULL;
 	}
 }
-
 
 void GameTitleNode::updateBonusLabel(int leftBonusStar) {
 	if (m_nNextBonusNeedStar != leftBonusStar) {
@@ -256,7 +264,7 @@ void GameTitleNode::updateBonusImg(int bonusType) {
     auto newBonus = BeadFactory::createBead((enBeadCategory)bonusType);
     if (m_spBonus == nullptr) {
         m_spBonus = newBonus;
-        m_spBonus->setPosition(Vec2::ZERO);
+        m_spBonus->setPosition(Vec2(375 + 200, 765));
         this->addChild(m_spBonus);
     }
     else
@@ -303,7 +311,7 @@ Point GameTitleNode::getStandedPos(enStandPos stand)
 	}
 	return pos;
 }
-void  GameTitleNode::doLabelFlyInAnim(const std::string& text, Point posStart, Point posEnd, float showDuration, const std::function<void()>& moveok)
+void GameTitleNode::doLabelFlyInAnim(const std::string& text, Point posStart, Point posEnd, float showDuration, const std::function<void()>& moveok)
 {
 	auto label = Label::createWithSystemFont(text, "fonts/hzgb.ttf", 48, Size(500,60), TextHAlignment::CENTER); 
 	label->setPosition(posStart);

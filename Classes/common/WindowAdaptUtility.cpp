@@ -7,6 +7,7 @@
 //
 
 #include "WindowAdaptUtility.h"
+#include "common/CommonDef.h"
 using namespace cocos2d;
 
 inline Vec2 transferToAnchorPosition(const cocos2d::Size& contentSize, const cocos2d::Vec2& transferAnchor, bool ignoreAnchor, const cocos2d::Vec2& originPosition, cocos2d::Vec2 originAnchor = Vec2::ANCHOR_MIDDLE)
@@ -22,19 +23,10 @@ void WindowAdaptUtility::addRootNodeToScene(cocos2d::Scene* scene, cocos2d::Node
     addRootNodeToScene(scene, root, root->getLocalZOrder());
 }
 
-void WindowAdaptUtility::addRootNodeToScene(cocos2d::Scene* scene, cocos2d::Node* root, int zorder)
-{
-    Size windowSize    = Director::getInstance()->getWinSize();
-    Vec2 visibleOrigin = Director::getInstance()->getVisibleOrigin();
-    Size visibleSize   = Director::getInstance()->getVisibleSize();
-	Size nodeSize = root->getContentSize();
-	{
-		//layer->setAnchorPoint(Point(0.0f,0.5f));
-		//Point pos = Point( (szVis.width-szWin.width)/2, szVis.height - szWin.height );
-		//layer->setPosition(pos);
-        Vec2 position = transferToAnchorPosition(nodeSize, root->getAnchorPoint(), root->isIgnoreAnchorPointForPosition(), Vec2(visibleSize.width / 2, visibleSize.height / 2), Vec2::ANCHOR_MIDDLE);
-        //Vec2 position = Vec2::ZERO;
-        root->setPosition(position);
+void WindowAdaptUtility::addRootNodeToScene(cocos2d::Scene* scene, cocos2d::Node* root, int zorder) {
+	root->setPosition((scene->getContentSize().width - root->getContentSize().width) / 2, (scene->getContentSize().height - root->getContentSize().height) / 2);
+    if (! root->isIgnoreAnchorPointForPosition() && root->getAnchorPoint() != Vec2::ZERO) {
+        root->setPosition(root->getPosition() + root->getAnchorPointInPoints());
     }
 	scene->addChild(root, zorder);
 }

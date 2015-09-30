@@ -9,7 +9,8 @@
 #include "TileMap.h"
 #include "graph/Graph.h"
 #include "data/GameEntity.h"
-#include "ResourceDef.h"
+#include "common/ResourceDef.h"
+#include "common/ResourceUtility.h"
 using namespace cocos2d;
 
 enum enZorder {
@@ -51,7 +52,7 @@ void TileMapLayer::initWith(GraphMat* graph, GraphData* cfg)
 	}
 }
 void TileMapLayer::push_secondary_cells(const Point2i pos) {
-	for (int i=0; i<e_cell_max; ++i) {
+	for (int i = 0; i < e_cell_max; ++i) {
 		if (i != e_cell_corrt && m_map[pos.y][pos.x][i]) {
 			m_map[pos.y][pos.x][i]->retain();
 			m_map[pos.y][pos.x][i]->removeFromParent();
@@ -59,7 +60,7 @@ void TileMapLayer::push_secondary_cells(const Point2i pos) {
 	}
 }
 void TileMapLayer::pop_secondary_cells(const Point2i pos) {
-	for (int i=0; i<e_cell_max; ++i) {
+	for (int i = 0; i < e_cell_max; ++i) {
 		if (i != e_cell_corrt && m_map[pos.y][pos.x][i]) {
 			Node*& sp_i = m_map[pos.y][pos.x][i];
 			m_map[pos.y][pos.x][e_cell_corrt]->addChild(sp_i, 2);
@@ -83,68 +84,65 @@ void TileMapLayer::pop_main_cell(const Point2i pos) {
 }
 void TileMapLayer::changeCell(Point2i pos, const NodeCategory* categNew, enCellType cellTyp)
 {
-	assert( m_map[pos.y][pos.x][cellTyp] );
+	assert(m_map[pos.y][pos.x][cellTyp]);
 
-	if (cellTyp == e_cell_corrt)
-	{
+	if (cellTyp == e_cell_corrt) {
 		push_secondary_cells(pos);
 		push_main_cell(pos);
 		m_map[pos.y][pos.x][e_cell_corrt]->release();
 
-		Sprite* sp = BeadFactory::createBead(*categNew);
-		m_map[pos.y][pos.x][e_cell_corrt] = sp;
+		auto node = BeadFactory::createBlinkBead(*categNew);
+		m_map[pos.y][pos.x][e_cell_corrt] = node;
 
 		m_map[pos.y][pos.x][e_cell_corrt]->retain();
 		pop_main_cell(pos);
 		pop_secondary_cells(pos);
 	}
-	else
-	{
+	else {
 		removeCell(pos, cellTyp);
 		addCell(pos, categNew, cellTyp);
 	}
 }
 void TileMapLayer::addCell(Point2i pos, const NodeCategory* categ, enCellType cellTyp)
 {
-    assert( m_map[pos.y][pos.x][cellTyp] == NULL );
-    Point newPos =  m_pGraph->m_coordCvt.getCoord(pos);
+    assert(m_map[pos.y][pos.x][cellTyp] == NULL);
+    Point newPos = m_pGraph->m_coordCvt.getCoord(pos);
     
-	Sprite* sp = NULL;
+	Node* node = NULL;
 	if (cellTyp == e_cell_bg) {
-		sp = Sprite::create(DIR_MAIN"block_select.png");
+		node = ResourceUtility::createSprite(DIR_MAIN, "block_select.png");
 	}
 	else {
-		sp = BeadFactory::createBead(*categ);
+		node = BeadFactory::createBlinkBead(*categ);
 	}
    
 	if (cellTyp == e_cell_oppos) {
-		this->addChild(sp, 1);
-		sp->setPosition(newPos);
+		this->addChild(node, 1);
+		node->setPosition(newPos);
 	}
 	else if (cellTyp == e_cell_corrt) {
-		this->addChild(sp, 2);
-		sp->setPosition(newPos);
+		this->addChild(node, 2);
+		node->setPosition(newPos);
 	}
 	else {
 		assert(cellAt(pos,e_cell_corrt));
-		m_map[pos.y][pos.x][e_cell_corrt]->addChild(sp, 2);
+		m_map[pos.y][pos.x][e_cell_corrt]->addChild(node, 2);
 		Size szCell = m_map[pos.y][pos.x][e_cell_corrt]->getContentSize();
-		sp->setPosition(Point(szCell.width/2, szCell.height/2));
+		node->setPosition(Point(szCell.width/2, szCell.height/2));
 	}
 	
-    m_map[pos.y][pos.x][cellTyp] = sp;
+    m_map[pos.y][pos.x][cellTyp] = node;
 }
 void TileMapLayer::removeCell(Point2i pos, enCellType cellTyp)
 {
     assert(pos.y < MAX_VERTEX_ROWS && pos.x < MAX_VERTEX_COLS);
-    if( m_map[pos.y][pos.x][cellTyp] ) {
-        m_map[pos.y][pos.x][cellTyp]->removeFromParentAndCleanup(true);
+    if (m_map[pos.y][pos.x][cellTyp]) {
+        m_map[pos.y][pos.x][cellTyp]->removeFromParent();
         m_map[pos.y][pos.x][cellTyp] = NULL;
 
 		if (cellTyp == e_cell_corrt) {
 			for (int i=0; i<e_cell_max; ++i) {
-				if( i != e_cell_oppos )
-					m_map[pos.y][pos.x][cellTyp] = NULL;
+				if (i != e_cell_oppos) m_map[pos.y][pos.x][cellTyp] = NULL;
 			}
 		}
     }
@@ -185,16 +183,14 @@ void TileMapLayer::removeCellAll(enCellType cellTyp)
 	}
 }
 
-bool TileMapLayer::containCoord(cocos2d::Point coord, Point2i* pos)
-{
+bool TileMapLayer::containCoord(cocos2d::Point coord, Point2i* pos) {
 	if (isBoardLocked()) {
 		return false;
 	}
 	
     Point2i __pos = m_pGraph->m_coordCvt.getPos(coord);
-    if( pos ) *pos = __pos;
-    if( ! m_pGraph->check_bdy_enable(__pos) || m_pGraph->isNodeLocked(__pos) )
-        return false;
+    if (pos) *pos = __pos;
+    if (! m_pGraph->check_bdy_enable(__pos) || m_pGraph->isNodeLocked(__pos)) return false;
     
     Node* cell = cellAt(__pos, e_cell_corrt);
     assert(cell);
@@ -203,18 +199,12 @@ bool TileMapLayer::containCoord(cocos2d::Point coord, Point2i* pos)
 }
 
 cocos2d::Sprite* BeadFactory::createBead(enBeadCategory spec) {
-	if (spec != CHESS_CATEGORY_ARMOR) {
-		return createBead(NodeCategory::make(enNodeColor::NODE_COLOR_SPEC, spec, -1));
-	}
-	else {
-		return createBead(NodeCategory::make(enNodeColor::NODE_COLOR_0, spec, -1));
-	}
+	return createBead(NodeCategory::make(spec != CHESS_CATEGORY_ARMOR ? NODE_COLOR_SPEC : NODE_COLOR_0, spec, -1));
 }
-cocos2d::Sprite* BeadFactory::createBead(NodeCategory __category)
-{
+cocos2d::Sprite* BeadFactory::createBead(NodeCategory category) {
     std::string sPrefix;
 	int         nPostfix;
-	switch (__category.color) {
+	switch (category.color) {
         case NODE_COLOR_0:
 			nPostfix = 0;
 			break;
@@ -237,43 +227,54 @@ cocos2d::Sprite* BeadFactory::createBead(NodeCategory __category)
             assert(0);
             break;
     }
-	switch (__category.spec) {
-	case CHESS_CATEGORY_NORM:
-		sPrefix = "stone"; break;
-	case CHESS_CATEGORY_UNKOWN:
-		sPrefix = "unkown"; break;
-	case CHESS_CATEGORY_ARMOR:
-		sPrefix = "rook"; break;
-	case CHESS_CATEGORY_HORSE:
-		sPrefix = "horse"; break;
-	case CHESS_CATEGORY_ARTILLERY:
-		sPrefix = "artillery"; break;
-	case CHESS_CATEGORY_ELEPH:
-		sPrefix = "eleph"; break;
-	case CHESS_CATEGORY_SDOLIER:
-		sPrefix = "soldier"; break;
-	case CHESS_CATEGORY_QUEEN:
-		sPrefix = "queen"; break;
-	case CHESS_CATEGORY_DOUBLE:
-		sPrefix = "double"; break;
-	default:
-		assert(0);
-		break;
+	switch (category.spec) {
+        case CHESS_CATEGORY_NORM:
+            sPrefix = "stone"; break;
+        case CHESS_CATEGORY_UNKOWN:
+            sPrefix = "unkown"; break;
+        case CHESS_CATEGORY_ARMOR:
+            sPrefix = "rook"; break;
+        case CHESS_CATEGORY_HORSE:
+            sPrefix = "double"; break;
+        case CHESS_CATEGORY_ARTILLERY:
+            sPrefix = "artillery"; break;
+        case CHESS_CATEGORY_ELEPH:
+            sPrefix = "eleph"; break;
+        case CHESS_CATEGORY_SDOLIER:
+            sPrefix = "soldier"; break;
+        case CHESS_CATEGORY_QUEEN:
+            sPrefix = "queen"; break;
+        case CHESS_CATEGORY_DOUBLE:
+            sPrefix = "horse"; break;
+        default:
+            assert(0);
+            break;
 	}
 
 	char buf[260];
-	sprintf(buf, DIR_STONE"%s_%d.png", sPrefix.c_str(), nPostfix);
-	Sprite* bead = Sprite::create(buf);
+	sprintf(buf, "%s_%d.png", sPrefix.c_str(), nPostfix);
+	Sprite* bead = ResourceUtility::createSprite(DIR_STONE, buf);
     
     {
-        auto bead_bg = Sprite::create(DIR_STONE"ge_bg.png");
+        auto bead_bg = ResourceUtility::createSprite(DIR_STONE, "ge_bg.png");
         const Size& beadSize = bead->getContentSize();
         bead_bg->setPosition(Vec2(beadSize.width / 2, beadSize.height / 2));
         bead->addChild(bead_bg, ZORDER_BEAD_BG);
     }
     
+
+    
     return bead;
 }
+cocos2d::Sprite* BeadFactory::createBlinkBead(NodeCategory category) {
+    auto bead = createBead(category);
+    if (category.spec != CHESS_CATEGORY_DOUBLE
+        && category.spec != CHESS_CATEGORY_NORM) {
+        bead->runAction(RepeatForever::create(Blink::create(1.0f, 2)));
+    }
+    return bead;
+}
+
 cocos2d::Sprite* BeadFactory::createBlastStar(enNodeColor color, float fscale) {
 	Sprite* spBlstStar = Sprite::create("zzImage/stone/star.png");
 	static Color3B color_seq[5] = {

@@ -61,6 +61,9 @@ private:
 struct BeadFactory {
     static cocos2d::Sprite* createBead(NodeCategory category);
 	static cocos2d::Sprite* createBead(enBeadCategory spec);
+    
+    static cocos2d::Sprite* createBlinkBead(NodeCategory category);
+    
 	static cocos2d::Sprite* createBlastStar(enNodeColor color, float fscale);
 };
 

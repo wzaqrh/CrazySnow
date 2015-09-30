@@ -19,7 +19,11 @@
 		2EC3233C1BB6C12D00496288 /* UserInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC3233A1BB6C12D00496288 /* UserInfo.cpp */; };
 		2EC3233F1BB6C18800496288 /* StageData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC3233D1BB6C18800496288 /* StageData.cpp */; };
 		2EC323421BB6EAA600496288 /* DataStorage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC323411BB6EAA600496288 /* DataStorage.cpp */; };
-		2EC81B411A8C2D55000E4AB7 /* font_atlas1 in Resources */ = {isa = PBXBuildFile; fileRef = 2EC81B3E1A8C2D55000E4AB7 /* font_atlas1 */; };
+		2EC479851BB949EC000A0DE4 /* GraphDataStorage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC479831BB949EC000A0DE4 /* GraphDataStorage.cpp */; };
+		2EC47BDE1BB956F5000A0DE4 /* map in Resources */ = {isa = PBXBuildFile; fileRef = 2EC47BDD1BB956F5000A0DE4 /* map */; };
+		2EC47BE21BBA48E2000A0DE4 /* sound in Resources */ = {isa = PBXBuildFile; fileRef = 2EC47BE11BBA48E2000A0DE4 /* sound */; };
+		2EC47BE51BBA4D61000A0DE4 /* SoundPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC47BE31BBA4D61000A0DE4 /* SoundPool.cpp */; };
+		2EC47BF81BBB1F75000A0DE4 /* plist in Resources */ = {isa = PBXBuildFile; fileRef = 2EC47BF71BBB1F75000A0DE4 /* plist */; };
 		2EC81B421A8C2D55000E4AB7 /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = 2EC81B3F1A8C2D55000E4AB7 /* fonts */; };
 		2EC81B431A8C2D55000E4AB7 /* zzImage in Resources */ = {isa = PBXBuildFile; fileRef = 2EC81B401A8C2D55000E4AB7 /* zzImage */; };
 		2EC81B931A8C2D6F000E4AB7 /* DialogComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC81B471A8C2D6F000E4AB7 /* DialogComponent.cpp */; };
@@ -29,8 +33,6 @@
 		2EC81B971A8C2D6F000E4AB7 /* TableViewHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC81B511A8C2D6F000E4AB7 /* TableViewHelper.cpp */; };
 		2EC81B981A8C2D6F000E4AB7 /* TouchSwallowLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC81B541A8C2D6F000E4AB7 /* TouchSwallowLayer.cpp */; };
 		2EC81B991A8C2D6F000E4AB7 /* WindowAdaptUtility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC81B561A8C2D6F000E4AB7 /* WindowAdaptUtility.cpp */; };
-		2EC81B9A1A8C2D6F000E4AB7 /* Factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC81B5A1A8C2D6F000E4AB7 /* Factory.cpp */; };
-		2EC81B9B1A8C2D6F000E4AB7 /* Factory2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC81B5C1A8C2D6F000E4AB7 /* Factory2.cpp */; };
 		2EC81B9C1A8C2D6F000E4AB7 /* GameEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC81B5D1A8C2D6F000E4AB7 /* GameEntity.cpp */; };
 		2EC81B9D1A8C2D6F000E4AB7 /* ShopEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC81B601A8C2D6F000E4AB7 /* ShopEntity.cpp */; };
 		2EC81B9E1A8C2D6F000E4AB7 /* StageEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2EC81B621A8C2D6F000E4AB7 /* StageEntity.cpp */; };
@@ -146,7 +148,13 @@
 		2EC3233E1BB6C18800496288 /* StageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StageData.h; sourceTree = "<group>"; };
 		2EC323401BB6D73300496288 /* StringUpdater.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringUpdater.h; sourceTree = "<group>"; };
 		2EC323411BB6EAA600496288 /* DataStorage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataStorage.cpp; sourceTree = "<group>"; };
-		2EC81B3E1A8C2D55000E4AB7 /* font_atlas1 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = font_atlas1; sourceTree = "<group>"; };
+		2EC479831BB949EC000A0DE4 /* GraphDataStorage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GraphDataStorage.cpp; sourceTree = "<group>"; };
+		2EC479841BB949EC000A0DE4 /* GraphDataStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphDataStorage.h; sourceTree = "<group>"; };
+		2EC47BDD1BB956F5000A0DE4 /* map */ = {isa = PBXFileReference; lastKnownFileType = folder; path = map; sourceTree = "<group>"; };
+		2EC47BE11BBA48E2000A0DE4 /* sound */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sound; sourceTree = "<group>"; };
+		2EC47BE31BBA4D61000A0DE4 /* SoundPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoundPool.cpp; sourceTree = "<group>"; };
+		2EC47BE41BBA4D61000A0DE4 /* SoundPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoundPool.h; sourceTree = "<group>"; };
+		2EC47BF71BBB1F75000A0DE4 /* plist */ = {isa = PBXFileReference; lastKnownFileType = folder; path = plist; sourceTree = "<group>"; };
 		2EC81B3F1A8C2D55000E4AB7 /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fonts; sourceTree = "<group>"; };
 		2EC81B401A8C2D55000E4AB7 /* zzImage */ = {isa = PBXFileReference; lastKnownFileType = folder; path = zzImage; sourceTree = "<group>"; };
 		2EC81B441A8C2D6F000E4AB7 /* AppMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppMacros.h; sourceTree = "<group>"; };
@@ -169,9 +177,6 @@
 		2EC81B561A8C2D6F000E4AB7 /* WindowAdaptUtility.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WindowAdaptUtility.cpp; sourceTree = "<group>"; };
 		2EC81B571A8C2D6F000E4AB7 /* WindowAdaptUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowAdaptUtility.h; sourceTree = "<group>"; };
 		2EC81B591A8C2D6F000E4AB7 /* DataStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataStorage.h; sourceTree = "<group>"; };
-		2EC81B5A1A8C2D6F000E4AB7 /* Factory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Factory.cpp; sourceTree = "<group>"; };
-		2EC81B5B1A8C2D6F000E4AB7 /* Factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Factory.h; sourceTree = "<group>"; };
-		2EC81B5C1A8C2D6F000E4AB7 /* Factory2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Factory2.cpp; sourceTree = "<group>"; };
 		2EC81B5D1A8C2D6F000E4AB7 /* GameEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameEntity.cpp; sourceTree = "<group>"; };
 		2EC81B5E1A8C2D6F000E4AB7 /* GameEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameEntity.h; sourceTree = "<group>"; };
 		2EC81B601A8C2D6F000E4AB7 /* ShopEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShopEntity.cpp; sourceTree = "<group>"; };
@@ -403,6 +408,8 @@
 				2EC81B551A8C2D6F000E4AB7 /* TouchSwallowLayer.h */,
 				2EC81B561A8C2D6F000E4AB7 /* WindowAdaptUtility.cpp */,
 				2EC81B571A8C2D6F000E4AB7 /* WindowAdaptUtility.h */,
+				2EC47BE31BBA4D61000A0DE4 /* SoundPool.cpp */,
+				2EC47BE41BBA4D61000A0DE4 /* SoundPool.h */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -410,11 +417,10 @@
 		2EC81B581A8C2D6F000E4AB7 /* data */ = {
 			isa = PBXGroup;
 			children = (
+				2EC479831BB949EC000A0DE4 /* GraphDataStorage.cpp */,
+				2EC479841BB949EC000A0DE4 /* GraphDataStorage.h */,
 				2EC81B591A8C2D6F000E4AB7 /* DataStorage.h */,
 				2EC323411BB6EAA600496288 /* DataStorage.cpp */,
-				2EC81B5A1A8C2D6F000E4AB7 /* Factory.cpp */,
-				2EC81B5B1A8C2D6F000E4AB7 /* Factory.h */,
-				2EC81B5C1A8C2D6F000E4AB7 /* Factory2.cpp */,
 				2EC81B5D1A8C2D6F000E4AB7 /* GameEntity.cpp */,
 				2EC81B5E1A8C2D6F000E4AB7 /* GameEntity.h */,
 				2EC3233A1BB6C12D00496288 /* UserInfo.cpp */,
@@ -533,7 +539,9 @@
 		46880B7519C43A67006E1F66 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				2EC81B3E1A8C2D55000E4AB7 /* font_atlas1 */,
+				2EC47BF71BBB1F75000A0DE4 /* plist */,
+				2EC47BE11BBA48E2000A0DE4 /* sound */,
+				2EC47BDD1BB956F5000A0DE4 /* map */,
 				2EC81B3F1A8C2D55000E4AB7 /* fonts */,
 				2EC81B401A8C2D55000E4AB7 /* zzImage */,
 			);
@@ -706,7 +714,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2EC47BE21BBA48E2000A0DE4 /* sound in Resources */,
 				5087E78117EB970100C73F5D /* Icon-120.png in Resources */,
+				2EC47BDE1BB956F5000A0DE4 /* map in Resources */,
 				5087E78617EB970100C73F5D /* Icon-76.png in Resources */,
 				5087E77F17EB970100C73F5D /* Default@2x.png in Resources */,
 				50EF629917ECD46A001EB2F8 /* Icon-100.png in Resources */,
@@ -714,7 +724,6 @@
 				5087E77D17EB970100C73F5D /* Default-568h@2x.png in Resources */,
 				5087E78517EB970100C73F5D /* Icon-72.png in Resources */,
 				521A8E6519F0C34300D177D7 /* Default-736h@3x.png in Resources */,
-				2EC81B411A8C2D55000E4AB7 /* font_atlas1 in Resources */,
 				2EC81B431A8C2D55000E4AB7 /* zzImage in Resources */,
 				50EF62A317ECD613001EB2F8 /* Icon-50.png in Resources */,
 				5087E78017EB970100C73F5D /* Icon-114.png in Resources */,
@@ -726,6 +735,7 @@
 				5087E78417EB970100C73F5D /* Icon-57.png in Resources */,
 				5087E77E17EB970100C73F5D /* Default.png in Resources */,
 				521A8E6419F0C34300D177D7 /* Default-667h@2x.png in Resources */,
+				2EC47BF81BBB1F75000A0DE4 /* plist in Resources */,
 				50EF629717ECD46A001EB2F8 /* Icon-58.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -768,6 +778,7 @@
 				2EC81BA91A8C2D6F000E4AB7 /* PlygonDrawer.cpp in Sources */,
 				2EC81B961A8C2D6F000E4AB7 /* ResourceUtility.cpp in Sources */,
 				2EC81B9E1A8C2D6F000E4AB7 /* StageEntity.cpp in Sources */,
+				2EC47BE51BBA4D61000A0DE4 /* SoundPool.cpp in Sources */,
 				2EC81BA21A8C2D6F000E4AB7 /* TilemapEvtHandler.cpp in Sources */,
 				2EC3233F1BB6C18800496288 /* StageData.cpp in Sources */,
 				2EC81B941A8C2D6F000E4AB7 /* LabelNode.cpp in Sources */,
@@ -780,14 +791,13 @@
 				2EC81B931A8C2D6F000E4AB7 /* DialogComponent.cpp in Sources */,
 				2EC81BA01A8C2D6F000E4AB7 /* EventPopstar.cpp in Sources */,
 				2EC81BA61A8C2D6F000E4AB7 /* IElemPaddingStragy.cpp in Sources */,
-				2EC81B9A1A8C2D6F000E4AB7 /* Factory.cpp in Sources */,
 				2EC81BAA1A8C2D6F000E4AB7 /* TileMap.cpp in Sources */,
 				2EC81BA81A8C2D6F000E4AB7 /* BeginLayer.cpp in Sources */,
+				2EC479851BB949EC000A0DE4 /* GraphDataStorage.cpp in Sources */,
 				46880B8819C43A87006E1F66 /* AppDelegate.cpp in Sources */,
 				503AE10017EB989F00D1A890 /* AppController.mm in Sources */,
 				2E3B37D31A8E98C6003291D7 /* WinBoard.cpp in Sources */,
 				2EC81BAE1A8C2D6F000E4AB7 /* ShopLayer.cpp in Sources */,
-				2EC81B9B1A8C2D6F000E4AB7 /* Factory2.cpp in Sources */,
 				2EC323421BB6EAA600496288 /* DataStorage.cpp in Sources */,
 				2E3B37D61A8EA7EB003291D7 /* LoseBoard.cpp in Sources */,
 				2EC81BA31A8C2D6F000E4AB7 /* TilmapEvtDispatcher.cpp in Sources */,
@@ -861,7 +871,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "";
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "";
 				VALID_ARCHS = "arm64 armv7";
 			};
@@ -880,6 +890,7 @@
 					USE_FILE32API,
 					CC_TARGET_OS_IPHONE,
 					"CC_ENABLE_CHIPMUNK_INTEGRATION=1",
+					NDEBUG,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
@@ -898,7 +909,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "";
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "";
 				VALID_ARCHS = "arm64 armv7";
 			};

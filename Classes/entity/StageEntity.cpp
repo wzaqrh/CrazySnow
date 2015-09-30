@@ -9,18 +9,28 @@
 #include "StageEntity.h"
 #include "entity/WindowStageEntity.h"
 #include "scene/game/GameMainNode.h"
-#include "data/Factory.h"
 #include "data/GameEntity.h"
 #include "data/StageData.h"
 #include "data/DataStorage.h"
+#include "data/GraphDataStorage.h"
 
 using namespace cocos2d;
 
 StageEntity::StageEntity()
-:m_curStageId(0)
-,m_lockFlag(false) {
-    m_graphData = new GraphData;
+:m_lockFlag(false)
+,m_baseData()
+,m_userData()
+{
+    m_graphData = new GraphData();
+    m_pStorage = new GraphDataStorageXML();
+    m_xmlPath = "";//FileUtils::getInstance()->getWritablePath() + "/map/";
 }
+
+StageEntity::~StageEntity() {
+    CC_SAFE_DELETE(m_graphData);
+    CC_SAFE_DELETE(m_pStorage);
+}
+
 
 GraphData* StageEntity::graphData() {
     return Inst()->m_graphData;
@@ -36,60 +46,106 @@ inline std::string getRound(int nRound) {
 	char szRound[260]; sprintf(szRound, "round%d", nRound);
 	return szRound;
 }
-void StageEntity::initRoundData(int nRound, bool firstTime) {
-    m_curStageId = nRound;
+void StageEntity::initBaseGraphData(bool loadFromRecord, int nRound) {
+    std::string strRound = getRound(getStageId());
     
-    std::string strRound = getRound(m_curStageId);
-    m_baseData = *GlobalCfgFactory::create(strRound);
+    srand(time(0));
+    char buf[200]; sprintf(buf, "map/stage%d.xml", nRound);
+    while (! FileUtils::getInstance()->isFileExist(buf)) {
+        sprintf(buf, "map/stage%d.xml", rand()%100);
+        CCLOG("try random load xml %s", buf);
+    }
+    m_xmlPath = FileUtils::getInstance()->fullPathForFilename(buf);
+    bool res = m_pStorage->load(m_xmlPath.c_str(), *m_graphData, &m_baseData);
+    CC_ASSERT(res);
     
-    firstTime ? m_userData.init(m_baseData) : m_userData.clear();
+    m_baseData.m_roundIndex = getStageId();
+    m_baseData.m_lbNeedScore *= 0.5 + nRound / (2.0 * (50.0 + nRound));
+    m_baseData.m_lbNeedScore *= 2;
+    m_baseData.m_lbNeedScore *= 1.5;
     
-    *m_graphData = *GraphDataFactory::create(strRound);
+    if (loadFromRecord) {
+        DataStorage::Inst()->read(*m_graphData);
+    }
 }
-
-void StageEntity::loadRecord() {
-    m_curStageId = UserInfo::Inst()->getStageId();
-    
-    DataStorage::Inst()->read(*m_graphData);
-    
-    m_userData.init(m_baseData);
-    DataStorage::Inst()->read(m_userData);
+void StageEntity::initUserData(bool loadFromRecord, bool firstInit) {
+    if (firstInit) {
+        m_userData.init(m_baseData, *UserInfo::Inst());
+    }
+    else {
+        m_userData.next(m_baseData);
+    }
+    if (loadFromRecord) {
+        DataStorage::Inst()->read(m_userData);
+    }
+    m_lockFlag = false;
+}
+void StageEntity::resetUserScore() {
+    UserInfo::Inst()->setStageId(1);
+    UserInfo::Inst()->setCurScore(0);
+    UserInfo::Inst()->setTotalNeedScore(0);
+}
+void StageEntity::flushToUserInfo() {
+    UserInfo* userInfo = UserInfo::Inst();
+    userInfo->setCurScore(m_userData.getCurScore());
+    userInfo->setHistMaxScore(m_userData.getCurScore());
+    userInfo->setTotalNeedScore(m_userData.getTotalNeedScore());
 }
 void StageEntity::saveRecord() {
     int stageFlag = 0;
-    if (m_userData.getStageClearFlag()) stageFlag = 1;
-    else if (m_lockFlag) stageFlag = -1;
+    if (m_userData.getStageClearFlag()) {
+        stageFlag = 1;
+    }
+    else if (m_lockFlag) {
+        stageFlag = -1;
+    }
     DataStorage::Inst()->save(stageFlag);
     
     DataStorage::Inst()->save(*m_graphData);
     DataStorage::Inst()->save(m_userData);
+    
+    flushToUserInfo();
+    DataStorage::Inst()->save(*UserInfo::Inst());
 }
 
 void StageEntity::beginRound(int nRound) {
-	initRoundData(nRound, true);
+    resetUserScore();
+	initBaseGraphData(false, nRound);
+    initUserData(false, true);
     
-	WindowStageEntity::Inst()->nextStage(CS_STAGE_GAME, CC_CALLBACK_2(StageEntity::onStageGameLoaded, this));
+	WindowStageEntity::Inst()->loadStage(CS_STAGE_GAME, CC_CALLBACK_2(StageEntity::onStageGameLoaded, this));
+}
+int  StageEntity::getStageId() const {
+    return UserInfo::Inst()->getStageId();
 }
 void StageEntity::nextRound() {
-	m_curStageId++;
+    UserInfo::Inst()->setStageId(getStageId() + 1);
+    flushToUserInfo();
     
-    initRoundData(m_curStageId, false);
+    initBaseGraphData(false, getStageId());
+    initUserData(false, false);
     
-    WindowStageEntity::Inst()->loadStage(CS_STAGE_GAME, CC_CALLBACK_2(StageEntity::onStageGameLoaded, this));
+    WindowStageEntity::Inst()->nextStage(CS_STAGE_GAME, CC_CALLBACK_2(StageEntity::onStageGameLoaded, this));
 }
 void StageEntity::loadRound() {
-    initRoundData(m_curStageId, false);
-    
     int stageFlag = DataStorage::Inst()->readFlag();
     if (stageFlag == 1) {
-        nextRound();
+        UserInfo::Inst()->setStageId(getStageId() + 1);
+        
+        initBaseGraphData(false, getStageId());
+        initUserData(false, true);
+        
+        WindowStageEntity::Inst()->loadStage(CS_STAGE_GAME, CC_CALLBACK_2(StageEntity::onStageGameLoaded, this));
     }
     else if (stageFlag == -1) {
-        beginRound(1);
+        //initRoundData(m_curStageId, false);
+        //beginRound(1);
     }
     else {
-        loadRecord();
-        WindowStageEntity::Inst()->nextStage(CS_STAGE_GAME, CC_CALLBACK_2(StageEntity::onStageGameLoaded, this));
+        initBaseGraphData(true, getStageId());
+        initUserData(true, true);
+        
+        WindowStageEntity::Inst()->loadStage(CS_STAGE_GAME, CC_CALLBACK_2(StageEntity::onStageGameLoaded, this));
     }
 }
 void StageEntity::endRound() {

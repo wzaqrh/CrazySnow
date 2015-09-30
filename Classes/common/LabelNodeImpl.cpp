@@ -10,6 +10,7 @@
 #include "CommonDef.h"
 using namespace cocos2d;
 
+//#define SIMULATE_PLIST_MODE
 /************************************
  * LabelNodeProtoLabelAdapter
  ***********************************/
@@ -55,9 +56,12 @@ StringMapperPlist::StringMapperPlist(const char* plistName) {
 }
 std::string StringMapperPlist::getValue(int key) {
     char buf[100];
+#ifndef SIMULATE_PLIST_MODE
+    sprintf(buf, "%c.png", key);
+#else
     sprintf(buf, "%s%c.png", m_plistPrefix.c_str(), key);
-    std::string strValue = buf;
-    return std::move(strValue);
+#endif
+    return buf;
 }
 /************************************
  * SpriteLabel
@@ -69,6 +73,10 @@ SpriteLabel::~SpriteLabel() {
     for (auto iter = m_unusedTextNodes.begin(); iter != m_unusedTextNodes.end(); ++iter) {
         iter->second->release();
     }
+#ifndef SIMULATE_PLIST_MODE
+    this->removeAllChildren();
+    //SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
+#endif
 }
 
 SpriteLabel* SpriteLabel::create(const char* plistName, const cocos2d::Size& rectSize, int fontDistance) {
@@ -85,6 +93,9 @@ SpriteLabel* SpriteLabel::create(const char* plistName, const cocos2d::Size& rec
 }
 
 void  SpriteLabel::initWithPlist(const char* plistName) {
+#ifndef SIMULATE_PLIST_MODE
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile(plistName);
+#endif
     m_mapper = new StringMapperPlist(plistName);
 }
 
@@ -137,7 +148,12 @@ cocos2d::Node* SpriteLabel::getTextNode(int key) {
         }
     }
     std::string filename = m_mapper->getValue(key);
+#ifndef SIMULATE_PLIST_MODE
+    Node* node = Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName(filename.c_str()));
+#else
     Node* node = Sprite::create(filename.c_str());
+#endif
+    if (node == NULL) node = Node::create();
     
     node->retain();
     m_unusedTextNodes.insert(std::make_pair(key, node));

@@ -9,10 +9,10 @@
 #include "ResourceUtility.h"
 using namespace cocos2d;
 
-cocos2d::MenuItem* ResourceUtility::createMenuItem(const char* _normalName, const char* _pressName, const cocos2d::ccMenuCallback& callback)
+cocos2d::MenuItem* ResourceUtility::createMenuItem(const char* _normalName, const char* _pressName, const char* plistname, const cocos2d::ccMenuCallback& callback)
 {
-    Sprite* _normal = Sprite::create(_normalName);
-    Sprite* _press  = Sprite::create(_pressName);
+    Sprite* _normal = createSprite(plistname, _normalName);
+    Sprite* _press  = createSprite(plistname, _pressName);
     if (strcmp(_normalName, _pressName) == 0) {
         _press->setScale(0.9f);
     }
@@ -34,4 +34,14 @@ std::string ResourceUtility::makePlistPrefix(const char* plistname)
         plistPrefix = plistPrefix.substr(0, lastSepr) + "/";
     }
     return std::move(plistPrefix);
+}
+
+cocos2d::Sprite* ResourceUtility::createSprite(const char* plistname, const char* name) {
+    if (plistname) {
+        auto cache = SpriteFrameCache::getInstance();
+        cache->addSpriteFramesWithFile(plistname);
+        return Sprite::createWithSpriteFrame(cache->getSpriteFrameByName(name));
+    }
+    else
+        return Sprite::create(name);
 }

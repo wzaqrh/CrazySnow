@@ -13,6 +13,7 @@ class WinBoard : public cocos2d::Layer
 public:
 	CREATE_FUNC(WinBoard);
 	WinBoard();
+    ~WinBoard();
 	virtual bool init();
 public:
 	void setBoardEventCallback(std::function<void(int)> delegate);

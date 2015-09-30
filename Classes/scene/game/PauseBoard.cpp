@@ -7,8 +7,8 @@
 //
 
 #include "PauseBoard.h"
-#include "ResourceDef.h"
-#include "ResourceUtility.h"
+#include "common/ResourceDef.h"
+#include "common/ResourceUtility.h"
 
 using namespace cocos2d;
 
@@ -34,16 +34,21 @@ PauseBoard::PauseBoard()
 bool PauseBoard::init()
 {
 	Layer::init();
+    setContentSize(Size(640, 960));
     initUI();
     layout();
     return true;
 }
+PauseBoard::~PauseBoard() {
+    removeAllChildren();
+    SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
+}
 void PauseBoard::initUI()
 {
-    m_background = Sprite::create(DIR_PAUSE"stop_bg.png");
+    m_background = ResourceUtility::createSprite(DIR_PAUSE, "stop_bg.png");
     this->addChild(m_background);
     
-    m_title = Sprite::create(DIR_PAUSE"stop_head.png");
+    m_title = ResourceUtility::createSprite(DIR_PAUSE, "stop_head.png");
     this->addChild(m_title);
     
     m_pMenu = Menu::create();
@@ -51,15 +56,15 @@ void PauseBoard::initUI()
 	m_pMenu->setPosition(Point::ZERO);
 	this->addChild(m_pMenu);
     
-    m_resume = ResourceUtility::createMenuItem(DIR_PAUSE"stop_btn.png", DIR_PAUSE"stop_btn.png", CC_CALLBACK_1(PauseBoard::onMenuCallback, this));
+    m_resume = ResourceUtility::createMenuItem("stop_btn.png", "stop_btn.png", DIR_PAUSE, CC_CALLBACK_1(PauseBoard::onMenuCallback, this));
     m_resume->setTag(TAG_BTN_PAUSE);
     m_pMenu->addChild(m_resume);
     
-    m_homepage = ResourceUtility::createMenuItem(DIR_PAUSE"back_btn.png", DIR_PAUSE"back_btn.png", CC_CALLBACK_1(PauseBoard::onMenuCallback, this));
+    m_homepage = ResourceUtility::createMenuItem("back_btn.png", "back_btn.png", DIR_PAUSE, CC_CALLBACK_1(PauseBoard::onMenuCallback, this));
     m_homepage->setTag(TAG_BTN_HOMEPAGE);
     m_pMenu->addChild(m_homepage);
     
-    m_continue = ResourceUtility::createMenuItem(DIR_PAUSE"go_btn.png", DIR_PAUSE"go_btn.png", CC_CALLBACK_1(PauseBoard::onMenuCallback, this));
+    m_continue = ResourceUtility::createMenuItem("go_btn.png", "go_btn.png", DIR_PAUSE, CC_CALLBACK_1(PauseBoard::onMenuCallback, this));
     m_continue->setTag(TAG_BTN_CONTINUE);
     m_pMenu->addChild(m_continue);
 }

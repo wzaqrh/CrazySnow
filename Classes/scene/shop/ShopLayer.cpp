@@ -26,6 +26,7 @@ ShopLayer::~ShopLayer() {
 
 bool ShopLayer::init() {
 	Layer::init();
+    setContentSize(Size(640, 960));
 	initGoodList();
 	initUI();
 	return true;
@@ -52,7 +53,7 @@ void ShopLayer::initUI()
 	Size contentSize;
     
     {
-        Sprite* background = Sprite::create(DIR_SHOP"shop_bg.png");
+        Sprite* background = ResourceUtility::createSprite(DIR_SHOP, "shop_bg.png");
         this->addChild(background, ZORDER_BG);
         
         contentSize = background->getContentSize();
@@ -72,7 +73,7 @@ void ShopLayer::initUI()
         pMenu->setPosition(Point::ZERO);
         this->addChild(pMenu);
         
-        auto _menuItem = ResourceUtility::createMenuItem(DIR_SHOP"Cancel.png", DIR_SHOP"Cancel.png", CC_CALLBACK_1(ShopLayer::onMenuClose, this));
+        auto _menuItem = ResourceUtility::createMenuItem("Cancel.png", "Cancel.png", DIR_SHOP, CC_CALLBACK_1(ShopLayer::onMenuClose, this));
         _menuItem->setPosition(Vec2(466, 612));
         pMenu->addChild(_menuItem);
     }
@@ -136,7 +137,7 @@ void GoodListCell::initUI(const ShopGood& goods) {
     Size contentSize;
     
     {
-        Node* background = Sprite::create(DIR_SHOP"shop_listbg.png");
+        Node* background = ResourceUtility::createSprite(DIR_SHOP, "shop_listbg.png");
         this->addChild(background);
         
         Size contentSize = background->getContentSize();
@@ -144,7 +145,7 @@ void GoodListCell::initUI(const ShopGood& goods) {
     }
 
     {
-        Node* diamond = Sprite::create(DIR_SHOP"zuan_ico.png");
+        Node* diamond = ResourceUtility::createSprite(DIR_SHOP, "zuan_ico.png");
         diamond->setPosition(Vec2(41, 45));
         this->addChild(diamond);
     }
@@ -158,7 +159,7 @@ void GoodListCell::initUI(const ShopGood& goods) {
     }
     
     {
-        Node* pZeng = Sprite::create(DIR_SHOP"zheng_ico.png");
+        Node* pZeng = ResourceUtility::createSprite(DIR_SHOP, "zheng_ico.png");
         pZeng->setPosition(Vec2(183, 45));
         this->addChild(pZeng);
     }
@@ -177,8 +178,8 @@ void GoodListCell::initUI(const ShopGood& goods) {
     this->addChild(pMenu);
     
     {
-        char buf[100]; sprintf(buf, DIR_SHOP"cny_%d.png", goods.m_price);
-        MenuItem* _menuItem = ResourceUtility::createMenuItem(buf, buf, CC_CALLBACK_1(GoodListCell::onMenuPurchase, this));
+        char buf[100]; sprintf(buf, "cny_%d.png", goods.m_price);
+        MenuItem* _menuItem = ResourceUtility::createMenuItem(buf, buf, DIR_SHOP, CC_CALLBACK_1(GoodListCell::onMenuPurchase, this));
         _menuItem->setPosition(Vec2(391, 45));
         pMenu->addChild(_menuItem);
     }

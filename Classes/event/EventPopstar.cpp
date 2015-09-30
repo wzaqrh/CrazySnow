@@ -3,6 +3,7 @@
 #include "graph/IElemPaddingStragy.h"
 #include "graph/GraphCommDebug.h"
 #include "graph/GraphMatrix.h"
+#include "common/SoundPool.h"
 using namespace cocos2d;
 
 TilEvtHandlerPopStar::TilEvtHandlerPopStar() 
@@ -99,6 +100,9 @@ bool TilEvtHandlerPopStar::check2HighLight(Point2i triggerPt)
 			}
 			m_pDelegate->popsNewStars(categSeq, true);
 		}
+        
+        SoundPool::Inst()->playEffect(SOUND_EFFECT_HIT);
+        
 		return true;
 	}
 	return false;
@@ -122,7 +126,7 @@ bool TilEvtHandlerPopStar::doPopStarAnim(std::function<void()> onAnimOk) {
 
 	m_pDrawer->clrGraph();
 	m_pSolver->get_erase_move_padd_solution(m_pDrawer->m_graph, pProxyes);
-	if( pProxyes->bOpera_success ) {
+	if (pProxyes->bOpera_success) {
 		m_pDrawer->draw_with_Graph_proxy(*pProxyes, [=](){
 			m_pDrawer->do_clrHighLight();
 			onAnimOk();

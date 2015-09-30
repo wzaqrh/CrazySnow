@@ -6,7 +6,7 @@
 //
 //
 #pragma once
-#include "WindowStageEntityType.h"
+#include "entity/WindowStageEntityType.h"
 
 class WindowStageEntity
 : public single_base<WindowStageEntity>

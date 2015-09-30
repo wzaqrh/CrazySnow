@@ -11,6 +11,7 @@
 #include "GraphMatrix.h"
 #include "RollCardUtinity.h"
 #include "GraphCommDebug.h"
+#include "AppMacros.h"
 
 inline bool cmp_Point_inc(const Point2i& pt1, const Point2i& pt2) {
     if( pt1.y != pt2.y )
@@ -148,15 +149,13 @@ int GraphMoveSolver_down_left::get_move_solution(GraphMat* graph, const GraphEra
 
 	move2i_merger mv_merger(move_solution.move_seq);
 
-	for(size_t i=0; i<vec_pts.size(); ++i)
-	{
+	for (size_t i = 0; i < vec_pts.size(); ++i) {
 		Point2i    ptCur   = vec_pts[i];
 		GraphNode* nodeCur = graph->get_node(ptCur);
 
 		GraphNodeVisitorRay2 vis;
-		for(vis.begin(ptCur, GraphNodeVisitorRay2::e_dir_ang2_90, graph->m_rows, graph->m_cols); !vis.end(); ++vis)
-			if( graph->check_bdy_enable(vis.m_ptCur) )
-			{
+		for (vis.begin(ptCur, GraphNodeVisitorRay2::e_dir_ang2_90, graph->m_rows, graph->m_cols); !vis.end(); ++vis)
+			if (graph->check_bdy_enable(vis.m_ptCur)) {
 				GraphNode* nodePre = graph->get_node(vis.m_ptCur);
 				nodeCur->assign_value(*nodePre);
 
@@ -174,12 +173,10 @@ int GraphMoveSolver_down_left::get_move_solution(GraphMat* graph, const GraphEra
 	GraphNodeVisitorGraph grph_vis;
 	GraphNodeVisitorRay2 ray_vis,ray_vis2;
 	grph_vis.begin(graph->m_rows, graph->m_cols);
-	for(Point2i ptIter=makeP2(0,0); grph_vis.check_bdy(ptIter); ptIter.x++)
-	{
+	for (Point2i ptIter = makeP2(0,0); grph_vis.check_bdy(ptIter); ptIter.x++) {
 		bool flag = false;
-		for(ray_vis.begin(makeP2(ptIter.x,-1), GraphNodeVisitorRay2::e_dir_ang2_90, graph->m_rows, graph->m_cols); !ray_vis.end(); ++ray_vis)
-		{
-			if( graph->get_node(ray_vis.m_ptCur)->isEnable() ) {
+		for (ray_vis.begin(makeP2(ptIter.x,-1), GraphNodeVisitorRay2::e_dir_ang2_90, graph->m_rows, graph->m_cols); !ray_vis.end(); ++ray_vis) {
+			if (graph->get_node(ray_vis.m_ptCur)->isEnable()) {
 				flag = true;
 				break;
 			}
@@ -187,20 +184,17 @@ int GraphMoveSolver_down_left::get_move_solution(GraphMat* graph, const GraphEra
 		vec_bool.push_back(flag);
 	}
 
-	for(size_t src=0,dst=0; src<vec_bool.size(); )
-	{
-		while( src<vec_bool.size() && !vec_bool[src] ) {
+	for (size_t src = 0,dst = 0; src < vec_bool.size(); ++src,++dst) {
+		while (src < vec_bool.size() && ! vec_bool[src]) {
 			++src;
 		}
 
-		if( src != dst && src<vec_bool.size() )
-		{
+		if (src != dst && src < vec_bool.size()) {
 			Point2i ptIter_src = makeP2(src,-1);
 			Point2i ptIter_dst = makeP2(dst,-1);
 			for( ray_vis.begin(ptIter_src, GraphNodeVisitorRay2::e_dir_ang2_90, graph->m_rows, graph->m_cols),
 				ray_vis2.begin(ptIter_dst, GraphNodeVisitorRay2::e_dir_ang2_90, graph->m_rows, graph->m_cols); !ray_vis.end()&&!ray_vis2.end(); ++ray_vis,++ray_vis2)
-				if( graph->get_node(ray_vis.m_ptCur)->isEnable() && !graph->get_node(ray_vis2.m_ptCur)->isEnable() )
-			{
+				if( graph->get_node(ray_vis.m_ptCur)->isEnable() && !graph->get_node(ray_vis2.m_ptCur)->isEnable()) {
 				GraphNode* node_src = graph->get_node(ray_vis.m_ptCur);
 				GraphNode* node_dst = graph->get_node(ray_vis2.m_ptCur);
 				node_dst->assign_value(*node_src);
@@ -209,9 +203,6 @@ int GraphMoveSolver_down_left::get_move_solution(GraphMat* graph, const GraphEra
 				mv_merger.add_move(ray_vis.m_ptCur, ray_vis2.m_ptCur);
 			}
 		}
-
-		++src;
-		++dst;
 	}
 	
 	std::sort(move_solution.move_seq.begin(), move_solution.move_seq.end(), cmp_Move_inc);
@@ -258,7 +249,7 @@ int GraphPaddSolver_none::get_padd_solution(GraphMat* graph, const GraphMoveElem
 	return 1;
 }
 
-#include "AppMacros.h"
+
 int GraphFlyInOnEnterSolver_popstar::get_flyin_seq(GraphMat* graph, GrapElemsFlyInProxy& flyin_seq)
 {
 	Point2i pt_cur;
@@ -268,13 +259,14 @@ int GraphFlyInOnEnterSolver_popstar::get_flyin_seq(GraphMat* graph, GrapElemsFly
 	for(pt_cur.y=0; pt_cur.y<graph->m_rows; ++pt_cur.y)
 	{
 		cocos2d::Point pt_iter2 = pt_iter;
-		for(pt_cur.x=0; pt_cur.x<graph->m_cols; ++pt_cur.x)
+		for(pt_cur.x = 0; pt_cur.x < graph->m_cols; ++pt_cur.x)
 		{
 			flyin_seq.glpos_end[pt_cur.y][pt_cur.x]   = graph->m_coordCvt.getCoord(pt_cur);
 			flyin_seq.glpos_start[pt_cur.y][pt_cur.x] = pt_iter2;
 			flyin_seq.glpos_start[pt_cur.y][pt_cur.x].x = flyin_seq.glpos_end[pt_cur.y][pt_cur.x].x;
-			flyin_seq.cost_time[pt_cur.y][pt_cur.x] = (pt_iter2.y-flyin_seq.glpos_end[pt_cur.y][pt_cur.x].y)/fspeed;
-
+			flyin_seq.cost_time[pt_cur.y][pt_cur.x] = (pt_iter2.y-flyin_seq.glpos_end[pt_cur.y][pt_cur.x].y) / fspeed;
+            //flyin_seq.cost_time[pt_cur.y][pt_cur.x] = 0.3f;
+            
 			pt_iter2.y += sz_token.height/2;
 		}
 		pt_iter.y += sz_token.height*3;
@@ -382,17 +374,14 @@ void Graph_proxy::clear()
 /************************************************************************/
 int IGraphEraseMovePaddSolver::get_erase_move_padd_solution(GraphMat* graph, Graph_proxy* m_pProxyes) 
 {
-	for (auto& iter : m_pProxyes->erase_solution.change_elems_seq)
-	{
+	for (auto& iter : m_pProxyes->erase_solution.change_elems_seq) {
 		graph->get_node(iter.pos)->getAttrib().catgy = iter.categoryB;
 	}
 
-	if ( !this->get_move_solution(graph, m_pProxyes->erase_solution, m_pProxyes->move_solution) )
-		return 0;
+	if (! this->get_move_solution(graph, m_pProxyes->erase_solution, m_pProxyes->move_solution)) return 0;
 	debug_point2i_seq("move_seq", m_pProxyes->move_solution.move_seq);
 
-	if ( !this->get_padd_solution(graph, m_pProxyes->move_solution, m_pProxyes->padd_solution) )
-		return 0;
+	if (! this->get_padd_solution(graph, m_pProxyes->move_solution, m_pProxyes->padd_solution)) return 0;
 	debug_point2i_seq("padd_seq", m_pProxyes->padd_solution.padd_pos_seq);
 
 	m_pProxyes->bOpera_success = 1;

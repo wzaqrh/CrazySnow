@@ -19,6 +19,7 @@ public:
 	};
 	CREATE_FUNC(PauseBoard);
 	PauseBoard();
+    ~PauseBoard();
 	virtual bool init();
 public:
 	void addBoardClkListener(std::function<void(enBoardItem)> delegate);

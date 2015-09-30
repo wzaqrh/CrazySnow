@@ -10,8 +10,7 @@ class StageUserData;
 enum GameTitleNodeEventType {
     GAME_TITLE_EVT_RESET_BONUS,
     GAME_TITLE_EVT_REFRESH_MAP,
-    GAME_TITLE_EVT_USE_HAMMER,
-    GAME_TITLE_EVT_STAGE_CLEAR
+    GAME_TITLE_EVT_USE_HAMMER
 };
 
 typedef std::function<void(int, void*)> GameTitleEventCallback;

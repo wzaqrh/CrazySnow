@@ -7,9 +7,10 @@
 //
 
 #include "LoseBoard.h"
-#include "ResourceDef.h"
-#include "ResourceUtility.h"
-#include "DialogComponent.h"
+#include "common/ResourceDef.h"
+#include "common/ResourceUtility.h"
+#include "common/DialogComponent.h"
+#include "common/ResourceUtility.h"
 
 using namespace cocos2d;
 
@@ -29,9 +30,14 @@ LoseBoard::LoseBoard()
 ,m_btnClose(nullptr)
 {
 }
+LoseBoard::~LoseBoard() {
+    this->removeAllChildren();
+    //SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
+}
 bool LoseBoard::init()
 {
 	Layer::init();
+    setContentSize(Size(640, 960));
     initUI();
     layout();
     return true;
@@ -41,10 +47,10 @@ void LoseBoard::setBoardEventCallback(std::function<void(int)> delegate) {
 }
 void LoseBoard::initUI()
 {
-    m_background = Sprite::create(DIR_DIALOG"lose_bg.png");
+    m_background = ResourceUtility::createSprite(DIR_DIALOG, "lose_bg.png");
     this->addChild(m_background);
     
-    m_title = Sprite::create(DIR_DIALOG"lose.png");
+    m_title = ResourceUtility::createSprite(DIR_DIALOG, "lose.png");
     this->addChild(m_title);
     
     m_pMenu = Menu::create();
@@ -52,20 +58,16 @@ void LoseBoard::initUI()
 	m_pMenu->setPosition(Point::ZERO);
 	this->addChild(m_pMenu);
     
-    m_btnLeft = ResourceUtility::createMenuItem(DIR_DIALOG"jxtg.png", DIR_DIALOG"jxtg.png", CC_CALLBACK_1(LoseBoard::onMenuCallback, this));
+    m_btnLeft = ResourceUtility::createMenuItem("jxtg.png", "jxtg.png", DIR_DIALOG, CC_CALLBACK_1(LoseBoard::onMenuCallback, this));
     m_btnLeft->setTag(TAG_BTN_LEFT);
     m_pMenu->addChild(m_btnLeft);
     
-    //m_btnRight = ResourceUtility::createMenuItem(DIR_DIALOG"go_btn.png", DIR_DIALOG"go_btn.png", CC_CALLBACK_1(LoseBoard::onMenuCallback, this));
-    //m_btnRight->setTag(TAG_BTN_RIGHT);
-    //m_pMenu->addChild(m_btnRight);
-    
-    m_btnClose = ResourceUtility::createMenuItem(DIR_DIALOG"close_btn.png", DIR_DIALOG"close_btn.png", CC_CALLBACK_1(LoseBoard::onMenuCallback, this));
+    m_btnClose = ResourceUtility::createMenuItem("close_btn.png", "close_btn.png", DIR_DIALOG, CC_CALLBACK_1(LoseBoard::onMenuCallback, this));
     m_btnClose->setTag(TAG_BTN_CLOSE);
     m_pMenu->addChild(m_btnClose);
     
     {
-        Node* countdownBg = Sprite::create(DIR_DIALOG"coumbg.png");
+        Node* countdownBg = ResourceUtility::createSprite(DIR_DIALOG, "coumbg.png");
         countdownBg->setPosition(Vec2(407, 207));
         this->addChild(countdownBg, 10);
         
@@ -81,7 +83,7 @@ void LoseBoard::initUI()
     }
     
     {
-        Node* labelImg = Sprite::create(DIR_DIALOG"jxx.png");
+        Node* labelImg = ResourceUtility::createSprite(DIR_DIALOG, "jxx.png");
         labelImg->setPosition(Vec2(m_background->getContentSize().width / 2, 261));
         this->addChild(labelImg);
     }
